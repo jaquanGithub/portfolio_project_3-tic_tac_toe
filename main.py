@@ -7,6 +7,7 @@ class Player:
     def __init__(self):
         self.name = ''
         self.sign = ''
+        self.score = 0
 
 def reset_board():
     global tiles, used_tiles
@@ -39,7 +40,9 @@ def check_board(current, second):
         tie_game(current, second)
 
 def won_game(winner, looser):
+    winner.score += 1
     print(f"\nCongrats! {winner.name} won the game!\n")
+    print(f"\nCurrent score: {winner.name}/{looser.name} - {winner.score}/{looser.score}")
     print(update_board(tiles))
     another_game = input("\nWould you like to play again? (n/y)").lower()
     if another_game == 'y':
