@@ -2,6 +2,12 @@ tiles = [[' ', ' ', ' '],
         [' ', ' ', ' '],
         [' ', ' ', ' ']]
 used_tiles = []
+
+class Player:
+    def __init__(self):
+        self.name = ''
+        self.sign = ''
+
 def reset_board():
     global tiles, used_tiles
     tiles = [[' ', ' ', ' '],
@@ -18,27 +24,27 @@ def update_board(tiles):
 3   {tiles[2][0]} | {tiles[2][1]} | {tiles[2][2]}'''
     return board
 
-def check_board():
+def check_board(current, second):
     for column_num in range(3):
         if tiles[0][column_num] == tiles[1][column_num] == tiles[2][column_num] != " ":
-            won_game(tiles[0][column_num])
+            won_game(current, second)
     for row_num in range(3):
         if tiles[row_num][0] == tiles[row_num][1] == tiles[row_num][2] != " ":
-            won_game(tiles[row_num][0])
+            won_game(current, second)
     if tiles[0][0] == tiles[1][1] == tiles[2][2] != " ":
-        won_game(tiles[0][0])
+        won_game(current, second)
     if tiles[0][2] == tiles[1][1] == tiles[2][0] != " ":
-        won_game(tiles[0][2])
+        won_game(current, second)
     if len(used_tiles) == 9:
-        tie_game()
+        tie_game(current, second)
 
-def won_game(who):
-    print(f"\nCongrats! {who} won the game!\n")
+def won_game(winner, looser):
+    print(f"\nCongrats! {winner.name} won the game!\n")
     print(update_board(tiles))
     another_game = input("\nWould you like to play again? (n/y)").lower()
     if another_game == 'y':
         reset_board()
-        choose_player()
+        choose_player(winner, looser)
     elif another_game == 'n':
         print("Very well then. See you next time!")
         exit()
@@ -46,13 +52,13 @@ def won_game(who):
         print("Seems like you typed something wrong... No problem, the program will just stop.")
         exit()
 
-def tie_game():
+def tie_game(current, second):
     print("\nThe game ended in a tie!\n")
     print(update_board(tiles))
     another_game = input("\nWould you like to play again? (n/y)").lower()
     if another_game == 'y':
         reset_board()
-        choose_player()
+        choose_player(current, second)
     elif another_game == 'n':
         print("Very well then. See you next time!")
         exit()
@@ -60,28 +66,22 @@ def tie_game():
         print("Seems like you typed something wrong... No problem, the program will just stop.")
         exit()
 
-def choose_player():
-    player_1 = input("Player 1- Choose a symbol (x/o): ").upper()
-    if player_1 == 'O':
-        player_2 = 'X'
-        print("\nPlayer 2 starts!")
-        game(player_2)
-    elif player_1 == 'X':
-        print("\nPlayer 1 starts!")
-        game(player_1)
+def choose_player(first_player, second_player):
+    first_player.sign = input(f"{first_player.name}- Choose a symbol (x/o): ").upper()
+    if first_player.sign == 'O':
+        second_player.sign = 'X'
+        print(f"\n{second_player.name} starts!")
+        game(second_player, first_player)
+    elif first_player.sign == 'X':
+        second_player.sign = 'O'
+        print(f"\n{first_player.name} starts!")
+        game(first_player, second_player)
     else:
         print("You did not type a valid input. Try again. ")
-        choose_player()
+        choose_player(first_player, second_player)
 
-def swap_player(player):
-    if player == 'X':
-        current_player = "O"
-    else:
-        current_player = "X"
-    return current_player
-
-def game(player):
-    print(f"\nIt is {player}'s turn!")
+def game(current_player, other_player):
+    print(f"\nIt is {current_player.name}'s turn!")
     print(update_board(tiles))
     column_input = input("\nChoose a column (a/b/c): ").lower()
     if column_input == 'a':
@@ -92,7 +92,7 @@ def game(player):
         column = 2
     else:
         print("\nSeems like you did not follow instructions... Try again.")
-        game(player)
+        game(current_player, other_player)
     row_input = input("\nChoose a row (1/2/3): ")
     if row_input == '1':
         row = 0
@@ -102,17 +102,20 @@ def game(player):
         row = 2
     else:
         print("Seems like you did not follow instructions... Try again.")
-        game(player)
+        game(current_player, other_player)
     if (row, column) in used_tiles:
         print("\nThat tile is taken already. Try another one.")
-        game(player)
+        game(current_player, other_player)
     else:
         used_tiles.append((row, column))
-    tiles[row][column] = player
-    check_board()
-    game(swap_player(player))
+    tiles[row][column] = current_player.sign
+    check_board(current_player, other_player)
+    game(current_player=other_player, other_player=current_player)
 
-print("Welcome to Tic Tac Toe!\n")
-choose_player()
 
-# TODO - Add game functionality, Seeing if someone won.
+player_1 = Player()
+player_2 = Player()
+print("Welcome to Tic Tac Toe!")
+player_1.name = input("\nType name of 1st player: ").capitalize()
+player_2.name = input("\nType name of 2nd player: ").capitalize()
+choose_player(player_1, player_2)
