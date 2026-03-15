@@ -17,12 +17,13 @@ def reset_board():
     used_tiles = []
 
 def update_board(tiles):
-    board = f'''    A | B | C\n
-1   {tiles[0][0]} | {tiles[0][1]} | {tiles[0][2]}
-{"-"*15}
-2   {tiles[1][0]} | {tiles[1][1]} | {tiles[1][2]}
-{"-"*15}
-3   {tiles[2][0]} | {tiles[2][1]} | {tiles[2][2]}'''
+    board = f'''    A | B | C
+    
+1)  {tiles[0][0]} | {tiles[0][1]} | {tiles[0][2]}
+   {"-"*11}
+2)  {tiles[1][0]} | {tiles[1][1]} | {tiles[1][2]}
+   {"-"*11}
+3)  {tiles[2][0]} | {tiles[2][1]} | {tiles[2][2]}'''
     return board
 
 def check_board(current, second):
